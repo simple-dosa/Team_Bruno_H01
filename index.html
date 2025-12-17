@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KarmaLoop | Neural Assessment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@300;500;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- MODULE 1: AUTHENTICATION -->
+        <section id="auth-module">
+            <nav class="top-nav">
+                <div class="logo"><span class="loop-icon">∞</span> KarmaLoop</div>
+                <button class="btn-link" onclick="showLogin()">Existing User? Login</button>
+            </nav>
+
+            <!-- Login Screen -->
+            <div id="login-screen" class="glass-card hidden">
+                <h2>SYSTEM LOGIN</h2>
+                <p class="subtitle">Enter your credentials to access the Neural Link.</p>
+                <div class="input-group">
+                    <label>EMAIL ADDRESS</label>
+                    <input type="email" id="login-email" placeholder="user@gmail.com">
+                </div>
+                <div class="input-group">
+                    <label>ACCESS KEY</label>
+                    <input type="text" id="login-key" placeholder="KL-2025-XXXX">
+                </div>
+                <button class="btn-primary" onclick="attemptLogin()">CONNECT</button>
+                <p id="login-status" class="status-text"></p>
+                <div class="action-row">
+                    <button class="btn-secondary" onclick="showRegistration()">New User? Initialize Protocol</button>
+                </div>
+            </div>
+
+            <!-- Registration Flow -->
+            <div id="progress-container" class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="step-labels">
+                    <span class="active">IDENTITY</span>
+                    <span>ACADEMIC</span>
+                    <span>CAREER</span>
+                    <span>CONFIRM</span>
+                </div>
+            </div>
+
+            <!-- Step 1: Identity -->
+            <div id="step-1" class="form-step glass-card">
+                <h2>INITIALIZE PROTOCOL</h2>
+                <p class="subtitle">Step 1: Establish your digital footprint.</p>
+                <div class="input-group">
+                    <label>FULL NAME</label>
+                    <input type="text" id="full-name" placeholder="Enter your name">
+                </div>
+                <div class="input-group">
+                    <label>GMAIL ADDRESS</label>
+                    <input type="email" id="email" placeholder="user@gmail.com">
+                    <div id="scan-bar" class="scan-bar hidden"></div>
+                    <p id="email-status" class="status-text"></p>
+                </div>
+                <button class="btn-primary" id="verify-btn" onclick="verifyEmail()">VERIFY IDENTITY</button>
+
+                <div id="access-key-group" class="hidden fade-in">
+                    <label>GENERATED ACCESS KEY</label>
+                    <div class="key-display" id="access-key-display">KL-2025-XXXX</div>
+                    <p class="note">⚠️ SAVE THIS KEY. It is your only way back in.</p>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn-primary btn-large" id="btn-step-1" onclick="nextStep(2)"
+                        disabled>CONTINUE</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Academic -->
+            <div id="step-2" class="form-step glass-card hidden">
+                <h2>ACADEMIC DATA</h2>
+                <p class="subtitle">Step 2: Upload your educational background.</p>
+                <div class="input-group">
+                    <label>INSTITUTION</label>
+                    <input type="text" id="institution" placeholder="University/College Name">
+                </div>
+                <div class="grid-row">
+                    <div class="input-group">
+                        <label>QUALIFICATION</label>
+                        <select id="qualification">
+                            <option value="">Select...</option>
+                            <option value="B.Tech">B.Tech</option>
+                            <option value="B.Sc">B.Sc</option>
+                            <option value="M.Tech">M.Tech</option>
+                            <option value="MBA">MBA</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>YEAR</label>
+                        <input type="number" id="year" placeholder="2025">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>FIELD OF STUDY</label>
+                    <input type="text" id="field" placeholder="e.g. Computer Science">
+                </div>
+                <div class="action-row">
+                    <button class="btn-secondary" onclick="prevStep(1)">BACK</button>
+                    <button class="btn-primary" onclick="nextStep(3)">CONTINUE</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Career -->
+            <div id="step-3" class="form-step glass-card hidden">
+                <h2>CAREER PARAMETERS</h2>
+                <p class="subtitle">Step 3: Define your trajectory.</p>
+                <div class="input-group">
+                    <label>AREAS OF INTEREST (Select all that apply)</label>
+                    <div class="tags-container">
+                        <button class="tag-btn" onclick="toggleInterest(this, 'AI/ML')">AI/ML</button>
+                        <button class="tag-btn" onclick="toggleInterest(this, 'Web Dev')">Web Dev</button>
+                        <button class="tag-btn" onclick="toggleInterest(this, 'Data')">Data Science</button>
+                        <button class="tag-btn" onclick="toggleInterest(this, 'Design')">Product Design</button>
+                        <button class="tag-btn" onclick="toggleInterest(this, 'Management')">Management</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>CAREER CLARITY (1-100)</label>
+                    <input type="range" id="clarity-range" min="0" max="100" value="50" class="slider">
+                </div>
+                <div class="action-row">
+                    <button class="btn-secondary" onclick="prevStep(2)">BACK</button>
+                    <button class="btn-primary" onclick="submitRegistration()">INITIALIZE LOOP</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 1.5: SUCCESS (Neural Link Established) -->
+        <section id="success-module" class="hidden">
+            <div class="glass-card success-card">
+                <div class="infinity-icon">∞</div>
+                <h2>Neural Link Established</h2>
+                <p class="subtitle">Welcome to the KarmaLoop, <span id="success-name" class="highlight">User</span>.</p>
+
+                <div class="key-container">
+                    <label>ACCESS KEY</label>
+                    <div class="key-box" id="success-key">KL-2025-XXXX</div>
+                </div>
+
+                <div class="status-row">
+                    <div class="status-item">
+                        <span class="label">STATUS</span>
+                        <span class="value active-text">ACTIVE</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">MODULE</span>
+                        <span class="value">GENESIS</span>
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="enterSystem()">ENTER SYSTEM</button>
+            </div>
+        </section>
+
+        <!-- MODULE 2: DASHBOARD -->
+        <main id="dashboard-module" class="hidden">
+            <header class="dash-header">
+                <div class="user-profile">
+                    <div class="avatar-circle" id="dash-avatar"></div>
+                    <div class="user-info">
+                        <h2 id="dash-name">User Name</h2>
+                        <span class="access-key" id="dash-key">KEY-0000</span>
+                    </div>
+                </div>
+
+                <div class="gamification-stats">
+                    <div class="stat-box">
+                        <span class="stat-label">KARMA</span>
+                        <span class="stat-value" id="karma-points">0</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-label">LEVEL</span>
+                        <span class="stat-value" id="xp-level">1</span>
+                    </div>
+                    <div class="badge-deck" id="badges-container">
+                        <!-- Badges injected here -->
+                    </div>
+                </div>
+
+                <div class="header-actions">
+                    <button class="icon-btn" onclick="toggleInterview()" title="Interview Practice">🎥</button>
+                    <button class="icon-btn logout-btn" onclick="logout()" title="Disconnect">🔌</button>
+                </div>
+            </header>
+
+            <div class="swot-grid">
+                <!-- S Quadrant -->
+                <div class="quadrant q-s" id="quad-s">
+                    <div class="quad-header">⚡ STRENGTHS</div>
+                    <ul class="data-list hidden" id="list-s"></ul>
+                    <button class="action-btn hidden" id="btn-s">UPGRADE PROTOCOLS</button>
+                    <div class="lock-overlay">
+                        <div class="scan-line"></div>
+                        <span>ENCRYPTED</span>
+                    </div>
+                </div>
+
+                <!-- W Quadrant -->
+                <div class="quadrant q-w" id="quad-w">
+                    <div class="quad-header">⚠️ WEAKNESSES</div>
+                    <ul class="data-list hidden" id="list-w"></ul>
+                    <button class="action-btn hidden" id="btn-w">PATCH BUG</button>
+                    <div class="lock-overlay">
+                        <div class="scan-line"></div>
+                        <span>ENCRYPTED</span>
+                    </div>
+                </div>
+
+                <!-- Neural Core (Scan Button) -->
+                <div class="neural-core" id="scan-btn">
+                    <button class="core-btn" id="trigger-scan" onclick="initiateScan()">
+                        INITIATE<br>NEURAL SCAN
+                    </button>
+                    <div class="pulse-ring"></div>
+                </div>
+
+                <!-- O Quadrant -->
+                <div class="quadrant q-o" id="quad-o">
+                    <div class="quad-header">🚀 OPPORTUNITIES</div>
+                    <ul class="data-list hidden" id="list-o"></ul>
+                    <button class="action-btn hidden" id="btn-o">ACCESS DATA</button>
+                    <div class="lock-overlay">
+                        <div class="scan-line"></div>
+                        <span>ENCRYPTED</span>
+                    </div>
+                </div>
+
+                <!-- T Quadrant -->
+                <div class="quadrant q-t" id="quad-t">
+                    <div class="quad-header">🛡️ THREATS</div>
+                    <ul class="data-list hidden" id="list-t"></ul>
+                    <button class="action-btn hidden" id="btn-t">ACTIVATE SHIELD</button>
+                    <div class="lock-overlay">
+                        <div class="scan-line"></div>
+                        <span>ENCRYPTED</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- MODULE 3: SCAN OVERLAY -->
+        <div id="scan-overlay" class="scan-overlay hidden">
+            <div class="scan-modal">
+                <div class="scan-header">
+                    <h2>NEURAL SCAN IN PROGRESS</h2>
+                    <div class="scan-progress">
+                        <div class="scan-fill" id="scan-progress-fill"></div>
+                    </div>
+                </div>
+                <div class="question-container" id="question-container">
+                    <h3 id="q-text">Initializing...</h3>
+                    <div class="options-grid" id="q-options">
+                        <!-- Options injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE 4: DETAIL MODAL -->
+        <div id="detail-modal" class="hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modal-title">ANALYSIS</h2>
+                    <button class="btn-close" onclick="closeModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="ai-summary" id="ai-summary-text"></div>
+                    <div class="content-grid" id="modal-content-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODULE 6: INTERVIEW PRACTICE -->
+        <section id="interview-module" class="full-screen-module hidden">
+            <div class="interview-container">
+                <header class="interview-header">
+                    <button class="btn-back" onclick="toggleInterview()">← DASHBOARD</button>
+                    <h2>INTERVIEW SIMULATOR // LIVE LINK</h2>
+                </header>
+
+                <div class="meet-interface">
+                    <!-- Video Screen -->
+                    <div class="video-screen">
+                        <div class="camera-feed">
+                            <div class="user-avatar-large" id="interview-avatar"></div>
+                            <div class="mic-status">🎤 LIVE</div>
+                        </div>
+                        <div class="meet-controls">
+                            <button class="meet-btn">🎤</button>
+                            <button class="meet-btn">📷</button>
+                            <button class="meet-btn end-call" onclick="toggleInterview()">📞</button>
+                        </div>
+                    </div>
+
+                    <!-- Tips & Tricks (Restored & Enhanced) -->
+                    <div class="tips-panel">
+                        <h3>NEURAL INTERVIEW PROTOCOLS</h3>
+                        <div class="roadmap-scroll">
+                            <ul class="tips-list">
+                                <li><strong>Mindset:</strong> Don't try to be perfect. Show how you think, learn, and
+                                    adapt.</li>
+                                <li><strong>The Pause:</strong> Take 3 seconds before answering. It shows confidence,
+                                    not confusion.</li>
+                                <li><strong>STAR Method:</strong> Structure answers as Situation, Task, Action, Result.
+                                </li>
+                                <li><strong>Eye Contact:</strong> Look at the camera lens (70%), not the screen.</li>
+                                <li><strong>Unknowns:</strong> Never guess. Say "I'm not sure, but here's how I'd find
+                                    out..."</li>
+                                <li><strong>Reverse Interview:</strong> Ask: "What does success look like in this role?"
+                                </li>
+                                <li><strong>Anxiety:</strong> Nervousness is normal. Turn it into excitement. You are
+                                    ready.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- THE ORACLE: Floating Chatbot -->
+        <div id="oracle-fab" class="oracle-fab hidden" onclick="toggleOracle()">
+            <div class="fab-icon">🤖</div>
+            <span class="fab-text">ORACLE ONLINE</span>
+        </div>
+
+        <div id="oracle-window" class="oracle-window hidden">
+            <div class="oracle-header">
+                <span>THE ORACLE // GUIDANCE SYSTEM</span>
+                <button class="btn-close" onclick="toggleOracle()">×</button>
+            </div>
+            <div class="oracle-body" id="oracle-messages">
+                <!-- Messages injected here -->
+            </div>
+            <div class="oracle-input">
+                <input type="text" id="oracle-input" placeholder="Query the system...">
+                <button onclick="sendOracleMessage()">SEND</button>
+            </div>
+        </div>
+
+        <!-- LEVEL UP OVERLAY -->
+        <div id="level-up-overlay" class="level-up-overlay hidden">
+            <div class="level-up-content">
+                <h1>LEVEL UP!</h1>
+                <p>Neural Map Unlocked</p>
+                <div class="xp-gain">+500 XP</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODULE 5: USER PROFILE & AVATAR -->
+    <section id="view-profile" class="full-screen-module hidden">
+        <div class="profile-container">
+            <header class="profile-header">
+                <button class="btn-back" onclick="toggleProfile()">← DASHBOARD</button>
+                <h2>NEURAL ID // CONFIGURATION</h2>
+            </header>
+
+            <div class="profile-grid">
+                <!-- Avatar Canvas -->
+                <div class="avatar-section">
+                    <div class="canvas-wrapper">
+                        <canvas id="rive-canvas" width="500" height="500"></canvas>
+                    </div>
+                    <div class="avatar-controls">
+                        <label>Expression Level <span id="exp-val">(5)</span></label>
+                        <input type="range" id="avatar-expression" min="1" max="10" value="5"
+                            oninput="updateAvatarInput('Expression', this.value)">
+
+                        <label>Skin Theme</label>
+                        <button class="btn-toggle" onclick="toggleAvatarTheme()">TOGGLE THEME</button>
+                        <p class="note">*Check Console (F12) for detected Rive inputs</p>
+                    </div>
+                </div>
+
+                <!-- User Details Form -->
+                <div class="details-section">
+                    <h3>IDENTITY PARAMETERS</h3>
+                    <div class="form-group">
+                        <label>Display Name</label>
+                        <input type="text" id="edit-name" class="cyber-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Academic Field</label>
+                        <input type="text" id="edit-field" class="cyber-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Primary Interest</label>
+                        <input type="text" id="edit-interest" class="cyber-input">
+                    </div>
+                    <button class="btn-primary btn-save" onclick="saveProfile()">SAVE IDENTITY</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rive Animation Library -->
+    <script src="https://unpkg.com/@rive-app/canvas@2.19.1/rive.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
